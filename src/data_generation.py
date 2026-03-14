@@ -60,9 +60,14 @@ def generate_synthetic_timeseries(
     labels = np.zeros(n_samples, dtype=np.int8)
     incident_starts: list[int] = []
 
+    margin = min(100, n_samples // 10)
     for _ in range(n_incidents):
         for _ in range(200):  # max placement attempts
-            start = int(rng.integers(100, n_samples - incident_duration - 100))
+            low  = margin
+            high = n_samples - incident_duration - margin
+            if high <= low:
+                break
+            start = int(rng.integers(low, high))
             no_overlap = all(
                 abs(start - s) >= incident_duration * 1.5
                 for s in incident_starts
