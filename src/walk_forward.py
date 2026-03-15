@@ -66,7 +66,7 @@ def walk_forward_cv(
         X_val, y_val = X[train_end:val_end], y[train_end:val_end]
 
         if y_val.sum() == 0:
-            # Skip folds with no positives — AUC is undefined
+            print(f"  Fold {fold + 1}/{n_splits}  skipped — no positive labels in validation window")
             continue
 
         predictor = IncidentPredictor()

@@ -14,6 +14,8 @@ predict_proba / predict interface so that the caller can sweep thresholds
 independently of training.
 """
 
+import warnings
+
 import numpy as np
 import lightgbm as lgb
 from sklearn.preprocessing import StandardScaler
@@ -108,7 +110,9 @@ class IncidentPredictor:
         if self.model is None:
             raise RuntimeError("Model has not been fitted yet.")
         X_scaled = self.scaler.transform(X)
-        return self.model.predict_proba(X_scaled)[:, 1]
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message="X does not have valid feature names")
+            return self.model.predict_proba(X_scaled)[:, 1]
 
     def predict(self, X: np.ndarray, threshold: float = 0.5) -> np.ndarray:
         """Return binary predictions using a given alert threshold.
